@@ -17,7 +17,7 @@
 
 #include "inet/physicallayer/wireless/common/contract/packetlevel/IRadio.h"
 #include "LoRaPhy/LoRaTransmitter.h"
-namespace flora {
+namespace lpwan {
 
 using namespace inet::power;
 

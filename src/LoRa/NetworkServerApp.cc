@@ -26,7 +26,7 @@
 #include "inet/networklayer/common/L3Tools.h"
 #include "inet/networklayer/ipv4/Ipv4Header_m.h"
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(NetworkServerApp);
 

@@ -26,7 +26,7 @@
 #include "inet/linklayer/common/InterfaceTag_m.h"
 
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaMac);
 

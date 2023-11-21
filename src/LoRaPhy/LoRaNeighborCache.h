@@ -22,7 +22,7 @@
 #include <set>
 #include <vector>
 
-namespace flora {
+namespace lpwan {
 
 class LoRaNeighborCache : public cSimpleModule, public INeighborCache
 {

@@ -13,7 +13,7 @@
 
 using namespace inet;
 using namespace inet::physicallayer;
-namespace flora {
+namespace lpwan {
 class LoRaTransmission : public TransmissionBase, public virtual INarrowbandSignal, public virtual IScalarSignal
 {
 protected:

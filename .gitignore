@@ -19,8 +19,8 @@
 *.exe
 *.out
 *.app
-src/flora
-src/flora_dbg
+src/lpwan
+src/lpwan_dbg
 
 src/**/*_m.h
 src/**/*_m.cc

@@ -21,7 +21,7 @@ import inet.common.INETDefs;
 import inet.common.Units;
 import inet.linklayer.common.MacAddress;
 
-namespace flora;
+namespace lpwan;
 
 cplusplus {{
 using namespace inet;

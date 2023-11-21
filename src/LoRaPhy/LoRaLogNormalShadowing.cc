@@ -16,7 +16,7 @@
 #include "LoRaLogNormalShadowing.h"
 #include "inet/common/INETMath.h"
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaLogNormalShadowing);
 

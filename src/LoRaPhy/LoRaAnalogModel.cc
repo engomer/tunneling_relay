@@ -22,7 +22,7 @@
 #include "LoRaReceiver.h"
 #include "LoRa/LoRaRadio.h"
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaAnalogModel);
 

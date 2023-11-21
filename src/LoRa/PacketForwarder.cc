@@ -23,7 +23,7 @@
 #include "inet/physicallayer/wireless/common/contract/packetlevel/SignalTag_m.h"
 
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(PacketForwarder);
 

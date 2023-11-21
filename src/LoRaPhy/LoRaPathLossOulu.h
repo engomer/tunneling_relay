@@ -20,7 +20,7 @@
 
 using namespace inet;
 using namespace inet::physicallayer;
-namespace flora {
+namespace lpwan {
 
 /**
  * This class implements the log normal shadowing model.

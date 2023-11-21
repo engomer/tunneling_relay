@@ -15,7 +15,7 @@
 
 #include "LoRaHataOkumura.h"
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaHataOkumura);
 

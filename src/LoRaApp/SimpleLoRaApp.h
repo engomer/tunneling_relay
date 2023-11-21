@@ -29,7 +29,7 @@
 using namespace omnetpp;
 using namespace inet;
 
-namespace flora {
+namespace lpwan {
 
 /**
  * TODO - Generated class

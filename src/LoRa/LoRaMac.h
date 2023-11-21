@@ -15,7 +15,7 @@
 
 #include "LoRaRadio.h"
 
-namespace flora {
+namespace lpwan {
 
 using namespace physicallayer;
 

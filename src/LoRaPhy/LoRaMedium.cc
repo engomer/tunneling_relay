@@ -30,7 +30,7 @@
 #include "inet/physicallayer/wireless/common/contract/packetlevel/SignalTag_m.h"
 #include "inet/physicallayer/wireless/common/contract/packetlevel/IErrorModel.h"
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaMedium);
 

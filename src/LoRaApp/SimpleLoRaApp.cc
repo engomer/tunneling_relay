@@ -19,7 +19,7 @@
 #include "inet/common/packet/Packet.h"
 
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(SimpleLoRaApp);
 

@@ -1,5 +1,5 @@
-package flora;
+package lpwan;
 
-@namespace(flora);
+@namespace(lpwan);
 
 @license(LGPL);

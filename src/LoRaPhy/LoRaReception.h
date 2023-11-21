@@ -12,7 +12,7 @@
 
 using namespace inet;
 using namespace inet::physicallayer;
-namespace flora {
+namespace lpwan {
 
 class LoRaReception : public ScalarReception
 {

@@ -18,7 +18,7 @@
 #include "LoRaPhy/LoRaNeighborCache.h"
 #include "inet/common/ModuleAccess.h"
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaNeighborCache);
 

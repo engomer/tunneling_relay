@@ -15,7 +15,7 @@
 
 #include "LoRaPathLossOulu.h"
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaPathLossOulu);
 

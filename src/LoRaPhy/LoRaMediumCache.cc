@@ -20,7 +20,7 @@
 #include "LoRaPhy/LoRaMedium.h"
 #include "LoRaPhy/LoRaLogNormalShadowing.h"
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaMediumCache);
 

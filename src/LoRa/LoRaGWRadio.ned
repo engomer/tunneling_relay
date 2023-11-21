@@ -13,10 +13,10 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package flora.LoRa;
+package lpwan.LoRa;
 
-import flora.LoRaPhy.LoRaTransmitter;
-import flora.LoRaPhy.LoRaReceiver;
+import lpwan.LoRaPhy.LoRaTransmitter;
+import lpwan.LoRaPhy.LoRaReceiver;
 
 
 import inet.physicallayer.wireless.common.base.packetlevel.FlatRadioBase;

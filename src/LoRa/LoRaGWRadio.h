@@ -26,7 +26,7 @@
 #include "LoRaPhy/LoRaMedium.h"
 #include "inet/common/LayeredProtocolBase.h"
 
-namespace flora {
+namespace lpwan {
 
 class LoRaGWRadio : public FlatRadioBase {
 private:

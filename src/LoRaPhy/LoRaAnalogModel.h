@@ -22,7 +22,7 @@
 
 #include "LoRaBandListening.h"
 
-namespace flora {
+namespace lpwan {
 
 class LoRaAnalogModel : public ScalarAnalogModelBase
 {

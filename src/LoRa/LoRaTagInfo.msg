@@ -22,7 +22,7 @@ cplusplus {{
 using namespace inet;
 }}
 
-namespace flora;
+namespace lpwan;
 
 class LoRaTag extends inet::TagBase
 {

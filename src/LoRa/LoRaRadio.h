@@ -27,7 +27,7 @@
 using namespace inet;
 using namespace inet::physicallayer;
 
-namespace flora {
+namespace lpwan {
 
 class LoRaRadio : public NarrowbandRadioBase //: public PhysicalLayerBase, public virtual IRadio
 {

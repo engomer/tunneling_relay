@@ -30,7 +30,7 @@
 #include "../LoRaApp/LoRaAppPacket_m.h"
 #include <list>
 
-namespace flora {
+namespace lpwan {
 
 class knownNode
 {

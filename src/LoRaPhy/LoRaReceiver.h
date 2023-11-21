@@ -38,7 +38,7 @@
 
 //based on Ieee802154UWBIRReceiver
 
-namespace flora {
+namespace lpwan {
 
 class LoRaReceiver : public FlatReceiverBase
 

@@ -18,7 +18,7 @@
 
 #include "inet/physicallayer/wireless/common/base/packetlevel/ApskModulationBase.h"
 
-namespace flora {
+namespace lpwan {
 
 using namespace inet;
 using namespace inet::physicallayer;

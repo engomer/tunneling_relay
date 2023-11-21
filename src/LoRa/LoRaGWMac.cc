@@ -22,7 +22,7 @@
 #include "inet/physicallayer/wireless/common/contract/packetlevel/IRadio.h"
 
 
-namespace flora {
+namespace lpwan {
 
 Define_Module(LoRaGWMac);
 

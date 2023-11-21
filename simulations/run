@@ -1,2 +1,2 @@
 #!/bin/bash
-$(dirname $0)/../src/run_flora "$@"
+$(dirname $0)/../src/run_lpwan "$@"

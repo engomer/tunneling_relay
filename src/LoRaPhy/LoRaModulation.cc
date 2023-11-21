@@ -15,7 +15,7 @@
 
 #include "LoRaModulation.h"
 
-namespace flora {
+namespace lpwan {
 
 const std::vector<ApskSymbol> LoRaModulation::constellation = {};
 

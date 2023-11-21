@@ -26,7 +26,7 @@ cplusplus {{
 using namespace inet;
 }}
 
-namespace flora;
+namespace lpwan;
 
 //
 // Message kinds for sending commands to the radio.
