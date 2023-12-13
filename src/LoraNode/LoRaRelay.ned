@@ -14,3 +14,32 @@
 // 
 
 package lpwan.LoraNode;
+
+import inet.node.contract.INetworkNode;
+import inet.mobility.static.StationaryMobility;
+import inet.networklayer.common.InterfaceTable;
+import inet.applications.contract.IApp;
+import lpwan.LoRa.LoRaRelayNic;
+
+module LoRaRelay like INetworkNode
+{
+    parameters:
+        @networkNode();
+        
+    submodules:
+        interfaceTable: InterfaceTable{
+            @display("p=30,26");
+        }
+        mobility: StationaryMobility {
+            @display("p=24,88");
+        }
+        LoRaNiC: LoRaRelayNic {
+            @display("p=137,239");
+        }
+        app[numApps]: <> like IApp {
+            parameters:
+                @display("p=375,76,row,150");
+        }
+    
+    connections allowunconnected:
+}
