@@ -25,6 +25,13 @@ module LoRaRelay like INetworkNode
 {
     parameters:
         @networkNode();
+        *.interfaceTableModule = default(absPath(".interfaceTable"));
+        *.energySourceModule = default(exists(energyStorage) ? absPath(".energyStorage") : "");
+        
+        LoRaRelayNic.radio.antenna.mobilityModule = default("^.^.^.mobility");
+        *.mobilityModule = default(exists(mobility) ? absPath(".mobility") : "");
+        
+        @display("bgb=783.96,587.688;i=device/modem");
         
     submodules:
         interfaceTable: InterfaceTable{
@@ -33,7 +40,7 @@ module LoRaRelay like INetworkNode
         mobility: StationaryMobility {
             @display("p=24,88");
         }
-        LoRaNiC: LoRaRelayNic {
+        LoRaNic: LoRaRelayNic {
             @display("p=137,239");
         }
         app[numApps]: <> like IApp {
@@ -42,4 +49,8 @@ module LoRaRelay like INetworkNode
         }
     
     connections allowunconnected:
+        for i=0..numApps-1 {		
+        	app[i].socketOut --> LoRaNic.upperLayerIn;
+        	LoRaNic.upperLayerOut --> app[i].socketIn;
+        }
 }

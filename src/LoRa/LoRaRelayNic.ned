@@ -15,4 +15,19 @@
 
 package lpwan.LoRa;
 
+import inet.linklayer.common.WirelessInterface;
 
+module LoRaRelayNic extends WirelessInterface 
+{
+    parameters:
+        @display("i=block/ifcard");
+        *.interfaceTableModule = default(absPath(this.interfaceTableModule));        
+        radio.typename = default("LoRaRelayRadio");
+        radio.antenna.mobilityModule = "^.^.^.mobility";
+        radio.transmitter.typename = "LoRaTransmitter";
+        radio.transmitter.headerLength = 0B;
+        radio.receiver.typename = "LoRaReceiver";
+        mac.typename = "LoRaRelayMac";
+        queue.typename = default("DropTailQueue");
+        queue.packetCapacity = default(-1);
+}
