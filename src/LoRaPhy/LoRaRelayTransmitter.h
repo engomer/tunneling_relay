@@ -1,7 +1,7 @@
 /*
- * LoRaRelayRadio.h
+ * LoRaRelayTransmitter.h
  *
- *  Created on: Nov 21, 2023
+ *  Created on: Dec 24, 2023
  *      Author: handybald
  */
 
@@ -12,10 +12,13 @@
 
 namespace lpwan{
 
-class LoRaRelayTransmitter : public FlatTransmitterBase
+class LoRaRelayTransmitter : public inet::physicallayer::FlatTransmitterBase
 {
+
 };
 
 }
+
+
 
 #endif /* LORAPHY_LORARELAYTRANSMITTER_H_ */

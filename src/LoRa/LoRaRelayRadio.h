@@ -9,6 +9,9 @@
 #define LORA_LORARELAYRADIO_H_
 
 #include "inet/physicallayer/wireless/common/base/packetlevel/FlatRadioBase.h"
+#include "inet/physicallayer/wireless/common/medium/RadioMedium.h"
+#include "inet/common/LayeredProtocolBase.h"
+#include "inet/common/Simsignals.h"
 
 #include "LoRaPhy/LoRaRelayTransmitter.h"
 #include "LoRaPhy/LoRaRelayReceiver.h"
@@ -16,14 +19,20 @@
 #include "LoRaPhy/LoRaTransmission.h"
 #include "LoRaMacFrame_m.h"
 #include "LoRaRelayMacFrame_m.h"
-
-#include "inet/physicallayer/wireless/common//medium/RadioMedium.h"
+#include "LoRaTagInfo_m.h"
 #include "LoRaPhy/LoRaMedium.h"
-#include "inet/common/LayeredProtocolBase.h"
+
 
 namespace lpwan {
 
 class LoRaRelayRadio : public FlatRadioBase {
+
+public:
+  static simsignal_t minSNIRSignal;
+  static simsignal_t packetErrorRateSignal;
+  static simsignal_t bitErrorRateSignal;
+  static simsignal_t symbolErrorRateSignal;
+  static simsignal_t droppedPacket;
 
 private:
 
@@ -45,6 +54,8 @@ protected:
     virtual void endTransmission(cMessage *timer);
 
     virtual bool isReceptionTimer(const cMessage *message) const override;
+    //TODO: this below and printToStream
+    // virtual void LoRaRelayRadio::handleReceptionTimer(cMessage *message) override;
     virtual void startReception(cMessage *timer, IRadioSignal::SignalPart part) override;
     virtual void continueReception(cMessage *timer) override;
     virtual void endReception(cMessage *timer) override;

@@ -13,4 +13,35 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
+import inet.common.INETDefs;
+import inet.common.Units;
+import inet.linklayer.common.MacAddress;
+import inet.common.packet.chunk.Chunk;
+
+cplusplus {{
+    using namespace inet;
+}}
+
 namespace lpwan;
+
+class LoRaRelayMacFrame extends inet::FieldsChunk {
+    //TODO: change this address plan
+
+    inet::MacAddress transmitterAddress;
+    inet::MacAddress receiverAddress;
+
+	inet::FieldsChunk rxFrame;
+
+    int sequenceNumber;
+    double LoRaTP;
+    inet::Hz LoRaCF;
+    int LoRaSF;
+    inet::Hz LoRaBW;
+    int LoRaCR;
+    bool LoRaUseHeader;
+    double RSSI;
+    double SNIR;
+
+
+}
+
