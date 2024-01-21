@@ -8,7 +8,15 @@
 #ifndef LORA_LORARELAYMAC_H_
 #define LORA_LORARELAYMAC_H_
 
+namespace lpwan{
 
+class LoRaRelayMac{
+
+public:
+    inet::MacAddress getMacAddress();
+
+};
+} /* namespace lpwan */
 
 
 

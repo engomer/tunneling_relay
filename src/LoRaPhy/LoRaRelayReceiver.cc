@@ -74,9 +74,9 @@ bool LoRaRelayReceiver::computeIsReceptionAttempted(const IListening *listening,
         auto loRaMac = dynamicPtrCast<const LoRaMacFrame>(chunk);
         auto LoRaPreamble = dynamicPtrCast<const LoRaPhyPreamble>(chunk);
         MacAddress rec;
-        if (loRaPreamble)
+        if (LoRaPreamble)
         {
-            rec = loRaPreamble->getReceiverAddress();
+            rec = LoRaPreamble->getReceiverAddress();
         }
         else if (loRaMac)
         {
@@ -159,7 +159,7 @@ bool LoRaRelayReceiver::isPacketCollided(const IReception *reception, IRadioSign
         {
             timingCollision = true;
         }
-
+        //TODO: look for iamGateway variable here
         if (overlap && frequencyCollision)
         {
             if(alohaChannelModel == true)
@@ -180,6 +180,140 @@ bool LoRaRelayReceiver::isPacketCollided(const IReception *reception, IRadioSign
     }
     return false;
 
+}
+
+}
+
+const IReceptionDecision *LoRaRelayReceiver::computeReceptionDecision(const IListening *listening, const IReception *reception, IRadioSignal::SignalPart part, const IInterference *interference, const ISnir *snir) const
+{
+    auto isReceptionPossible = computeIsReceptionPossible(listening, reception, part);
+    auto isReceptionAttempted = isReceptionPossible && computeIsReceptionAttempted(listening, reception, part, interference);
+    auto isReceptionSuccessful = isReceptionAttempted && computeIsReceptionSuccessful(listening, reception, part, interference, snir);
+    return new ReceptionDecision(reception, part, isReceptionPossible, isReceptionAttempted, isReceptionSuccessful);
+}
+
+Packet *LoRaRelayReceiver::computeReceivedPacket(const ISnir *snir, bool isReceptionSuccessful) const
+{
+    auto transmittedPacket = snir->getReception()->getTransmission()->getPacket();
+    auto receivedPacket = transmittedPacket->dup();
+    receivedPacket->clearTags();
+//    receivedPacket->addTag<PacketProtocolTag>()->setProtocol(transmittedPacket->getTag<PacketProtocolTag>()->getProtocol());
+    if (!isReceptionSuccessful)
+        receivedPacket->setBitError(true);
+    return receivedPacket;
+}
+
+const IReceptionResult *LoRaRelayReceiver::computeReceptionResult(const IListening *listening, const IReception *reception, const IInterference *interference, const ISnir *snir, const std::vector<const IReceptionDecision *> *decisions) const
+{
+    bool isReceptionSuccessful = true;
+    for (auto decision : *decisions)
+        isReceptionSuccessful &= decision->isReceptionSuccessful();
+    auto packet = computeReceivedPacket(snir, isReceptionSuccessful);
+
+    auto signalPowerInd = packet->addTagIfAbsent<SignalPowerInd>();
+    const LoRaReception *loRaReception = check_and_cast<const LoRaReception *>(reception);
+    W signalRSSI_w = loRaReception->getPower();
+    signalPowerInd->setPower(signalRSSI_w);
+
+    auto snirInd = packet->addTagIfAbsent<SnirInd>();
+    snirInd->setMinimumSnir(snir->getMin());
+    snirInd->setMaximumSnir(snir->getMax());
+    auto signalTimeInd = packet->addTagIfAbsent<SignalTimeInd>();
+    signalTimeInd->setStartTime(reception->getStartTime());
+    signalTimeInd->setEndTime(reception->getEndTime());
+    auto errorRateInd = packet->addTagIfAbsent<ErrorRateInd>();
+    errorRateInd->setPacketErrorRate(errorModel ? errorModel->computePacketErrorRate(snir, IRadioSignal::SIGNAL_PART_WHOLE) : 0.0);
+    errorRateInd->setBitErrorRate(errorModel ? errorModel->computeBitErrorRate(snir, IRadioSignal::SIGNAL_PART_WHOLE) : 0.0);
+    errorRateInd->setSymbolErrorRate(errorModel ? errorModel->computeSymbolErrorRate(snir, IRadioSignal::SIGNAL_PART_WHOLE) : 0.0);
+
+    return new ReceptionResult(reception, decisions, packet);
+}
+
+bool LoRaRelayReceiver::computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, IRadioSignal::SignalPart part, const IInterference *interference, const ISnir *snir) const
+{
+    return true;
+    //we don't check the SINR level, it is done in collision checking by P_threshold level evaluation
+}
+
+const IListening *LoRaRelayReceiver::createListening(const IRadio *radio, const simtime_t startTime, const simtime_t endTime, const Coord &startPosition, const Coord &endPosition) const
+{
+    //TODO: make sure that we can listen both ed and gateway
+    if(iAmGateway == false)
+    {
+        auto node = getContainingNode(this);
+//        auto loRaApp = check_and_cast<SimpleLoRaApp *>(node->getSubmodule("SimpleLoRaApp"));
+        auto loRaRadio = check_and_cast<LoRaRadio *>(node->getSubmodule("LoRaNic")->getSubmodule("radio"));
+        return new LoRaBandListening(radio, startTime, endTime, startPosition, endPosition, loRaRadio->loRaCF, loRaRadio->loRaBW, loRaRadio->loRaSF);
+    }
+    else {
+        return new LoRaBandListening(radio, startTime, endTime, startPosition, endPosition, LoRaCF, LoRaBW, LoRaSF);
+    }
+}
+
+const IListeningDecision *LoRaRelayReceiver::computeListeningDecision(const IListening *listening, const IInterference *interference) const
+{
+    const IRadio *receiver = listening->getReceiver();
+    const IRadioMedium *radioMedium = receiver->getMedium();
+    const IAnalogModel *analogModel = radioMedium->getAnalogModel();
+    const INoise *noise = analogModel->computeNoise(listening, interference);
+    const ScalarNoise *loRaNoise = check_and_cast<const ScalarNoise *>(noise);
+    W maxPower = loRaNoise->computeMaxPower(listening->getStartTime(), listening->getEndTime());
+    bool isListeningPossible = maxPower >= energyDetection;
+    delete noise;
+    EV_DEBUG << "Computing whether listening is possible: maximum power = " << maxPower << ", energy detection = " << energyDetection << " -> listening is " << (isListeningPossible ? "possible" : "impossible") << endl;
+    return new ListeningDecision(listening, isListeningPossible);
+}
+
+W LoRaRelayReceiver::getSensitivity(const LoRaReception *reception) const
+{
+    //function returns sensitivity -- according to LoRa documentation, it changes with LoRa parameters
+    //Sensitivity values from Semtech SX1272/73 datasheet, table 10, Rev 3.1, March 2017
+    W sensitivity = W(math::dBmW2mW(-126.5) / 1000);
+    if(reception->getLoRaSF() == 6)
+    {
+        if(reception->getLoRaBW() == Hz(125000)) sensitivity = W(math::dBmW2mW(-121) / 1000);
+        if(reception->getLoRaBW() == Hz(250000)) sensitivity = W(math::dBmW2mW(-118) / 1000);
+        if(reception->getLoRaBW() == Hz(500000)) sensitivity = W(math::dBmW2mW(-111) / 1000);
+    }
+
+    if (reception->getLoRaSF() == 7)
+    {
+        if(reception->getLoRaBW() == Hz(125000)) sensitivity = W(math::dBmW2mW(-124) / 1000);
+        if(reception->getLoRaBW() == Hz(250000)) sensitivity = W(math::dBmW2mW(-122) / 1000);
+        if(reception->getLoRaBW() == Hz(500000)) sensitivity = W(math::dBmW2mW(-116) / 1000);
+    }
+
+    if(reception->getLoRaSF() == 8)
+    {
+        if(reception->getLoRaBW() == Hz(125000)) sensitivity = W(math::dBmW2mW(-127) / 1000);
+        if(reception->getLoRaBW() == Hz(250000)) sensitivity = W(math::dBmW2mW(-125) / 1000);
+        if(reception->getLoRaBW() == Hz(500000)) sensitivity = W(math::dBmW2mW(-119) / 1000);
+    }
+    if(reception->getLoRaSF() == 9)
+    {
+        if(reception->getLoRaBW() == Hz(125000)) sensitivity = W(math::dBmW2mW(-130) / 1000);
+        if(reception->getLoRaBW() == Hz(250000)) sensitivity = W(math::dBmW2mW(-128) / 1000);
+        if(reception->getLoRaBW() == Hz(500000)) sensitivity = W(math::dBmW2mW(-122) / 1000);
+    }
+    if(reception->getLoRaSF() == 10)
+    {
+        if(reception->getLoRaBW() == Hz(125000)) sensitivity = W(math::dBmW2mW(-133) / 1000);
+        if(reception->getLoRaBW() == Hz(250000)) sensitivity = W(math::dBmW2mW(-130) / 1000);
+        if(reception->getLoRaBW() == Hz(500000)) sensitivity = W(math::dBmW2mW(-125) / 1000);
+    }
+    if(reception->getLoRaSF() == 11)
+    {
+        if(reception->getLoRaBW() == Hz(125000)) sensitivity = W(math::dBmW2mW(-135) / 1000);
+        if(reception->getLoRaBW() == Hz(250000)) sensitivity = W(math::dBmW2mW(-132) / 1000);
+        if(reception->getLoRaBW() == Hz(500000)) sensitivity = W(math::dBmW2mW(-128) / 1000);
+    }
+    if(reception->getLoRaSF() == 12)
+    {
+        if(reception->getLoRaBW() == Hz(125000)) sensitivity = W(math::dBmW2mW(-137) / 1000);
+        if(reception->getLoRaBW() == Hz(250000)) sensitivity = W(math::dBmW2mW(-135) / 1000);
+        if(reception->getLoRaBW() == Hz(500000)) sensitivity = W(math::dBmW2mW(-129) / 1000);
+    }
+    return sensitivity;
 }
 
 }
