@@ -24,9 +24,9 @@ module LoRaRelayNic extends WirelessInterface
         *.interfaceTableModule = default(absPath(this.interfaceTableModule));        
         radio.typename = default("LoRaRelayRadio");
         radio.antenna.mobilityModule = "^.^.^.mobility";
-        radio.transmitter.typename = "LoRaTransmitter";
+        radio.transmitter.typename = "LoRaRelayTransmitter";
         radio.transmitter.headerLength = 0B;
-        radio.receiver.typename = "LoRaReceiver";
+        radio.receiver.typename = "LoRaRelayReceiver";
         mac.typename = "LoRaRelayMac";
         queue.typename = default("DropTailQueue");
         queue.packetCapacity = default(-1);

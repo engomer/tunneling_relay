@@ -47,6 +47,8 @@ bool LoRaRelayReceiver::computeIsReceptionPossible(const IListening *listening, 
     //TODO: if we you write LoRaRelayTransmission, change the cast below.
     const LoRaTransmission *loRaTransmission = check_and_cast<const LoRaTransmission *>(transmission);
     auto *loRaRadio = check_and_cast<const LoRaRelayRadio *>(loRaTransmission->getTransmitter()->getRadio());
+
+    return true;
 }
 
 bool LoRaRelayReceiver::computeIsReceptionPossible(const IListening *listening, const IReception *reception, IRadioSignal::SignalPart part) const
@@ -98,6 +100,7 @@ bool LoRaRelayReceiver::computeIsReceptionAttempted(const IListening *listening,
 
 bool LoRaRelayReceiver::isPacketCollided(const IReception *reception, IRadioSignal::SignalPart part, const IInterference *interference) const
 {
+    //TODO: here we can implement different access scheme to decrease the collision if needed
     auto interferingReceptions = interference->getInterferingReceptions();
     const LoRaReception *loRaReception = check_and_cast<const LoRaReception*>(reception);
     simtime_t m_x = (loRaReception->getStartTime() + loRaReception->getEndTime())/2;
@@ -175,12 +178,9 @@ bool LoRaRelayReceiver::isPacketCollided(const IReception *reception, IRadioSign
                     return true;
                 }
             }
-
         }
     }
     return false;
-
-}
 
 }
 

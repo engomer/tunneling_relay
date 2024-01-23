@@ -32,6 +32,7 @@ protected:
 
     virtual W getPower() const override { return receivedPower; }
     virtual W computeMinPower(simtime_t startTime, simtime_t endTime) const override;
+    //TODO: here we can add custom minpower function to calculate the needed minPower
 };
 
 } // namespace inet

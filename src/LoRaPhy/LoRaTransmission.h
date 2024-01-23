@@ -28,6 +28,7 @@ public:
     virtual Hz getCenterFrequency() const override { return LoRaCF; }
     virtual Hz getBandwidth() const override { return LoRaBW; }
     virtual W getPower() const override { return LoRaTP; }
+    //TODO:check this min power calculation how to make it more realistic?
     virtual W computeMinPower(const simtime_t startTime, const simtime_t endTime) const override { return LoRaTP; }
 
     W getLoRaTP() const { return LoRaTP; }
